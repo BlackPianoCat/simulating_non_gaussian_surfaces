@@ -9,13 +9,13 @@ of Interfacial Contact Characteristics*, by Guoqing Yang, Baotong Li, Yang Wang 
 
 # How to use it
 
-Import the library:
+Just import the library,
 
 ```python
 import non_gaussian_surfaces as seb
 ```
 
-And then type
+and type,
 
 ```python
 seb.SAimage_fft_2(500,3,1,3,20,20,0.9,800.0,corr=True)
