@@ -23,8 +23,8 @@ seb.SAimage_fft_2(500,3,1,3,20,20,0.9,800.0,corr=True)
 
 # Results
 
-![3D Non Gaussian Rough Surface](https://imgur.com/jrfH5Fn)
+![Imgur](https://i.imgur.com/jrfH5Fn.png)
 
-![Binary Image Extracted from the 3D Gaussian Surface](https://imgur.com/nKt1YX2)
+![Imgur](https://i.imgur.com/nKt1YX2.png)
 
-![Correlation Functions](https://imgur.com/7IA6yya)
+![Imgur](https://i.imgur.com/7IA6yya.png)
