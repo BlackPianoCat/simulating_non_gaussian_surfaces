@@ -3,8 +3,8 @@ import numpy as np
 
 ################################################################
 # Ported from original MATLAB ToolBox "Johnson Curve Toolbox"
-# Dave (2021). Johnson Curve Toolbox 
-# (https://www.mathworks.com/matlabcentral/fileexchange/46123-johnson-curve-toolbox), 
+# Dave (2021). Johnson Curve Toolbox
+# (https://www.mathworks.com/matlabcentral/fileexchange/46123-johnson-curve-toolbox),
 # MATLAB Central File Exchange. Retrieved April 29, 2021.
 #
 # Coded in Python by MAX PIERINI © 2021 EpiData.it (info@epidata.it)
@@ -13,7 +13,7 @@ import numpy as np
 
 
 def sub_sbfit(xbar,sigma,rtb1,b2):
-    
+
     def n_fault():
         # - assigns something to output arguments when fault=1
         gamma = 0
@@ -21,7 +21,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         xlam  = 0
         xi    = 0
         return gamma, delta, xlam, xi
-    
+
     # Preallocate:
     deriv = np.empty(shape=(4))
     dd = np.empty(shape=(4))
@@ -34,7 +34,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
     a13 = 0.8; a14 = 0.9281; a15 = 1.0614; a16 = 1.25; a17 = 1.7973; a18 = 1.8
     a19 = 2.163; a20 = 2.5; a21 = 8.5245; a22 = 11.346; rb1 = abs(rtb1)
     b1 = rb1 * rb1; neg = (rtb1 < zero)
-    
+
     # Get d as first estimate of delta:
     e = b1 + one
     x = half*b1 + one
@@ -57,7 +57,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         d = a13*(f-one)
     else:
         d = (a9*f-a4)*(three-f)**(-a5)
-        
+
     # Get g as first estimate of gamma:
     g = zero
     if (b1 >= tt):
@@ -71,7 +71,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
             g = b1**(u*d+y)*(a14+d*(a15*d-a11))
         else:
             g = (a12*d**a17+a8)*b1**a6
-    
+
     # -----Main iteration starts here:-----
     stopWhile = 0 # initialize
     m    = 0
@@ -79,7 +79,6 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         m     = m + 1
         fault = (m > limit)
         if (fault):
-            # TODO: ==================
             gamma, delta, xlam, xi = n_fault()
             return gamma,delta,xlam,xi,fault
 
@@ -88,14 +87,12 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         hmu, fault = sub_mom(g,d)
 
         if (fault):
-            # TODO: ==================
             gamma, delta, xlam, xi = n_fault()
             return gamma,delta,xlam,xi,fault
         s     = hmu[0]*hmu[0]
         h2    = hmu[1] - s
         fault = (h2 <= zero)
         if (fault):
-            # TODO: ==================
             gamma, delta, xlam, xi = n_fault()
             return gamma,delta,xlam,xi,fault
         t    = np.sqrt(h2)
@@ -107,7 +104,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         bet2 = h4/h2b
         w    = g*d
         u    = d*d
-    
+
         # Get derivatives:
         for j in range(2):
             for k in range(4):
@@ -129,7 +126,7 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
         t = one/(deriv[0]*deriv[3]-deriv[1]*deriv[2])
         u = (deriv[3]*(rbet-rb1)-deriv[1]*(bet2-b2))*t
         y = (deriv[0]*(bet2-b2)-deriv[2]*(rbet-rb1))*t
-        
+
         # Form new estimates of g and d:
         g = g - u
         if ((b1 == zero) or (g < zero)):
@@ -147,18 +144,12 @@ def sub_sbfit(xbar,sigma,rtb1,b2):
                 gamma  = g
             xi = xbar - xlam*hmu[0]
             break
-    
+
     return gamma,delta,xlam,xi,fault
 
 
 def sub_mom(g,d):
     # - evaluates 1st six moments of a johnson SB distribution, using Goodwin method
-
-    # -----Notes:-----
-    # rttwo : sqrt(2.0)
-    # rrtpi : reciprocal of sqrt(pi)
-    # expa  : a value such that exp(expa) does not quite cause overflow
-    # expb  : a value such that 1.0 + exp(-expb) may be taken to be 1.0
 
     # Define constants:
     zz = 1.0e-5; vv = 1.0e-8; limit = 500; rttwo = 1.414213562; rrtpi = 0.5641895835
@@ -181,7 +172,7 @@ def sub_mom(g,d):
     if (d < three):
         h = quart*d
     k = 1
-    
+
     # -----OUTER WHILE loop:-----
     skip     = 1 # skip 1st block of outer WHILE loop on 1st run
     stop_out = 0 # initiialize
@@ -211,7 +202,7 @@ def sub_mom(g,d):
         m = 0
         # -----INNER WHILE loop evaluates infinite series:-----
         stop_inn = 0
-        
+
         while (stop_inn==0):
             m = m + 1
             if (m > limit):
@@ -257,7 +248,7 @@ def sub_mom(g,d):
             v = rrtpi*h
             for i in range(6):
                 a[i] = v*a[i]
-            
+
             for i in range(6):
                 if (a[i] == zero):
                     fault = 1
@@ -292,7 +283,7 @@ def sub_sufit(xbar,sd,rb1,b2):
 
     # Initialize:
     stopWhile = 0
-    
+
     if (abs(rb1)>tol):
         while (stopWhile==0): # Johnson iteration:
             w1  = w + one
@@ -317,7 +308,7 @@ def sub_sufit(xbar,sd,rb1,b2):
     else:
         # Symmetrical case - results are known
         y = zero
-        
+
     x     = np.sqrt(one/np.log(w))
     delta = x
     gamma = y*x
@@ -326,14 +317,11 @@ def sub_sufit(xbar,sd,rb1,b2):
     x     = sd/np.sqrt(half*(w-one)*(half*w*(z+one/z)+one))
     xlam  = x
     xi    = (half*np.sqrt(w)*(y-one/y))*x + xbar
-    
+
     return gamma,delta,xlam,xi
 
 
 def sub_sign(A,B):
-    # - port of SIGN statement from FORTRAN
-    #
-    # If B\ge 0 then the result is ABS(A), else it is -ABS(A).
     A      = abs(A)
     if B<0:
         A = A * -1
@@ -341,17 +329,14 @@ def sub_sign(A,B):
 
 
 def sub_jnsn(xbar,sd,rb1,bb2):
-    
+
     def n_GOTO(where, gamma,delta,xlam,xi,itype,ifault):
-        # - nested function of sub_jnsn to emulate 'GOTO' statements from FORTRAN
         if where == 'SN':
-            # SN (Normal) distribution:
             itype = 4
             delta = one/sd
             gamma = -xbar/sd
             xlam  = one # after Simonato (2011)
         elif where == 'ST':
-            # ST distribution:
             itype = 5
             y     = half + half*np.sqrt(one-four/(b1+four))
             if (rb1 > zero):
@@ -363,13 +348,13 @@ def sub_jnsn(xbar,sd,rb1,bb2):
         else:
             raise Exception('Unknown parameter for WHERE!')
         return gamma,delta,xlam,xi,itype,ifault
-    
+
     # constants
     tol = 0.01; zero = 0.0; quart = 0.25
     half = 0.5; one = 1.0; two = 2.0
     three = 3.0; four  = 4.0
     itype = np.nan
-    
+
     # Check for negative SD:
     if (sd < zero):
         itype  = np.nan; gamma = np.nan; delta = np.nan
@@ -381,7 +366,7 @@ def sub_jnsn(xbar,sd,rb1,bb2):
         xlam   = zero
         gamma  = zero
         delta  = zero
-        
+
     if (sd > zero):
         b1    = rb1*rb1
         b2    = bb2
@@ -400,7 +385,7 @@ def sub_jnsn(xbar,sd,rb1,bb2):
                 if (b2 >= b1+one):
                     gamma,delta,xlam,xi,itype,ifault = n_GOTO('ST', gamma,delta,xlam,xi,itype,ifault)
                     return gamma,delta,xlam,xi,itype,ifault
-                itype  = 5 # no 'itype' was included here in original FORTRAN 
+                itype  = 5 # no 'itype' was included here in original FORTRAN
                 ifault = 2
                 return gamma,delta,xlam,xi,itype,ifault
         else:
@@ -410,7 +395,7 @@ def sub_jnsn(xbar,sd,rb1,bb2):
         itype = 5
         xi    = xbar
         return gamma,delta,xlam,xi,itype,ifault
-    
+
     while (stopWhile==0):
         # -----Skip this block on 1st run:-----
         if (skip==1):
@@ -428,7 +413,7 @@ def sub_jnsn(xbar,sd,rb1,bb2):
         if ((b2 < zero) or (fault)):
             b2 = u
         x = u - b2
-        
+
         if (abs(x) <= tol):
             # Lognormal (SL) distribution:
             itype = 1
@@ -458,47 +443,22 @@ def sub_jnsn(xbar,sd,rb1,bb2):
             itype = 2
             gamma,delta,xlam,xi = sub_sufit(xbar,sd,rb1,b2)
             stopWhile=1
-            
+
     return gamma,delta,xlam,xi,itype,ifault
 
 
 def f_johnson_M(mu,sd,skew,kurt):
     """
     Use moments to estimate parameters of a Johnson distribution.
-
-    ARGS:
-        - mu   [float] : mean
-        - sd   [float] : standard deviation
-        - skew [float] : skewness
-        - kurt [float] : kurtosis
-
-    RETURNS:
-        - coef [tuple] : coefficients of Johnson distributions
-            - gamma  [float]
-            - delta  [float]
-            - xi     [float]
-            - lambda [float]
-        - type   [str] : Johnson distribution type
-                         (SL, SU, SB, SN, SY)
-        - error  [str] : any error occured
-
-    Ported from original MATLAB ToolBox "Johnson Curve Toolbox"
-    Dave (2021). Johnson Curve Toolbox 
-    (https://www.mathworks.com/matlabcentral/fileexchange/46123-johnson-curve-toolbox), 
-    MATLAB Central File Exchange. Retrieved April 29, 2021.
-
-    ######################################################################
-    # Coded in Python by MAX PIERINI © 2021 EpiData.it (info@epidata.it) #
-    ######################################################################
     """
-    if not np.all((np.isscalar(mu), 
+    if not np.all((np.isscalar(mu),
                    np.isscalar(sd),
                    np.isscalar(skew),
                    np.isscalar(kurt))):
         raise Exception('All inputs must be scalars!')
     if sd<0:
         raise Exception('Cannot have a negative SD!')
-    
+
     gamma,delta,lambd,xi,itype,ifault = sub_jnsn(mu,sd,skew,kurt)
     coef = (gamma, delta, xi, lambd)
 
@@ -514,7 +474,7 @@ def f_johnson_M(mu,sd,skew,kurt):
         _type = 'ST'
     else:
         raise Exception('Unknown ITYPE!')
-        
+
     if ifault == 0:
         msg = ''
     elif ifault == 1:
@@ -523,5 +483,5 @@ def f_johnson_M(mu,sd,skew,kurt):
         msg = '(b2 < b1+two)'
     else:
         msg = 'SB failure, SL or ST used instead'
-    
+
     return coef, _type, msg
